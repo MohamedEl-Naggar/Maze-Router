@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <algorithm>
 using namespace std;
 struct pin 
 {
@@ -9,6 +10,11 @@ struct pin
 	int y;
 	int layer;
 };
+bool sortbysec(const pair<int, int>& a,
+	const pair<int, int>& b)
+{
+	return (a.second < b.second);
+}
 void batata()
 {
 	vector<vector<pin>> net;
@@ -16,9 +22,12 @@ void batata()
 
 	ifstream ifile("input.txt");
 	int nett = 0;
+	vector< pair <int, int> > vect;
 	while (getline(ifile, input))
 	{
-		cout << input << endl;
+		int minx = INT_MAX, miny = INT_MAX, minl = INT_MAX;
+		int maxx = INT_MIN, maxy = INT_MIN, maxl = INT_MIN;
+		//cout << input << endl;
 		int count = 0;
 		input = input.substr(input.find('('));
 		for (int i = 0; i < input.length(); i++)
@@ -39,17 +48,26 @@ void batata()
 			temppin.layer = layer;
 			temppin.x = x;
 			temppin.y = y;
+			minx = x < minx ? x : minx;
+			miny = y < miny ? y : miny;
+			minl = layer > minl ?layer : minl;
+			maxx = x > maxx ? x : maxx;
+			maxy = y > maxy ? y : maxy;
+			maxl = layer < maxl ? layer : maxl;
 			tempv.push_back(temppin);
 			if (i == count - 1)
 				net.push_back(tempv);
 		}
-
+		int volume = (maxx - minx) * (maxy - miny) * (maxl - minl);
+		vect.push_back(make_pair(nett, volume));
 		nett++;
+		
 	}
-	for (int i = 0; i < net.size(); i++)
+	sort(vect.begin(), vect.end(), sortbysec);
+	for (int i = 0;i < net.size(); i++)
 	{
-		for (int j = 0; j < net[i].size(); j++)
-			cout << net[i][j].layer << ' ' << net[i][j].x << ' ' << net[i][j].y << endl;
+		for (int j = 0; j < net[vect[i].first].size(); j++)
+			cout << net[vect[i].first][j].layer << ' ' << net[vect[i].first][j].x << ' ' << net[vect[i].first][j].y << endl;
 		cout << endl << endl;
 	}
 		
