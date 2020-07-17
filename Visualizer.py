@@ -41,6 +41,10 @@ for i in range(len(x_plot)):
         axes12.scatter(x_plot[i], y_plot[i], s=110, c='blue', marker='s')
     elif layers[i] == '2':
         axes12.scatter(x_plot[i], y_plot[i], s=110, c='purple', marker='s')
+
+axes12.set_xticks((range(1,51)))
+axes12.set_yticks((range(1,51)))
+
 axes12.grid(True)
 axes12.set_title('layer 1 & 2')
 fig.tight_layout()
