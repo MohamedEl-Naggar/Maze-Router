@@ -30,30 +30,24 @@ for x in f:
                     x_coordinates.append(temp)
                 temp = ""
 
-
-fig, axes = plt.subplots(1,2, figsize = (15,6))
+fig, axes12 = plt.subplots(1,1, figsize = (15,10))
+fig2, axes34 = plt.subplots(1,1, figsize = (15,10))
 
 x_plot = [int(i)+0.5 for i in x_coordinates]
 y_plot = [int(i)+0.5 for i in y_coordinates]
+
 for i in range(len(x_plot)):
     if layers[i] == '1':
-        axes[0].scatter(x_plot[i], y_plot[i], s=110, c='blue', marker='s')
+        axes12.scatter(x_plot[i], y_plot[i], s=110, c='blue', marker='s')
     elif layers[i] == '2':
-        axes[0].scatter(x_plot[i], y_plot[i], s=110, c='purple', marker='s')
-
-
-
-#axes[0].scatter(x_coordinates,y_coordinates)
-#axes[0].plot(x_coordinates,y_coordinates)
-
-axes[0].set_xticks((range(1,31)))
-axes[0].set_yticks((range(1,31)))
-
-axes[0].grid(True)
-axes[0].set_title('layer 1 & 2')
-
-axes[1].grid(True)
-axes[1].set_title('layer 3 & 4')
-
+        axes12.scatter(x_plot[i], y_plot[i], s=110, c='purple', marker='s')
+axes12.grid(True)
+axes12.set_title('layer 1 & 2')
 fig.tight_layout()
+plt.show()
+
+axes34.grid(True)
+axes34.set_title('layer 3 & 4')
+
+fig2.tight_layout()
 plt.show()
