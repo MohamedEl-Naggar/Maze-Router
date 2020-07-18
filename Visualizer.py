@@ -55,11 +55,14 @@ for i in range(len(x_plot)):
         axes12.scatter(x_plot[i], y_plot[i], s=110, c='purple', marker='s') # layer 2 is drawn in purple
         axes23.scatter(x_plot[i], y_plot[i], s=110, c='purple', marker='s') # layer 2 is drawn in purple
         if vias[i] == 1:
-            axes12.scatter(x_plot[i], y_plot[i], s=110, c='blue', marker='x') 
+            if layers[i-1] == '1':
+                axes12.scatter(x_plot[i], y_plot[i], s=110, c='blue', marker='x') 
+            else:
+                axes23.scatter(x_plot[i], y_plot[i], s=110, c='yellow', marker='x') 
     elif layers[i] == '3':
         axes23.scatter(x_plot[i], y_plot[i], s=110, c='yellow', marker='s') # layer 3 is drawn in yellow
         if vias[i] == 1:
-            axes12.scatter(x_plot[i], y_plot[i], s=110, c='purple', marker='x') 
+            axes23.scatter(x_plot[i], y_plot[i], s=110, c='purple', marker='x') 
 
 # axes range
 axes12.set_xticks((range(1,51))) 
