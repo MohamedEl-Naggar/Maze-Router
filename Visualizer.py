@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-f = open("out.txt", "r")
+f = open("output.txt", "r")
 layers = [] 
 x_coordinates = [] # x coordinates array
 y_coordinates = [] # y coordinates array
