@@ -5,7 +5,7 @@
 #include <algorithm>
 using namespace std;
 
-const int NUMBER_LAYERS = 3;
+const int NUMBER_LAYERS = 2;
 const int N = 1000;
 
 struct pin									//a struct to define the pin and its attributes 
@@ -71,7 +71,7 @@ vector<vector<pin>> getting_input(string filename)								//the main function fo
 		nett++;
 	}
 	sort(vect.begin(), vect.end(), sortbysec);					//sorting each net by the volume of the box that contains the pins
-	
+
 	return net;
 }
 
@@ -292,25 +292,30 @@ void maze_routing(vector<vector<pin>> nets)
 				p = bfs_cells->at(0);
 				bfs_cells->erase(bfs_cells->begin());
 				cur_num = cells[p.layer][p.x][p.y];
-			}
-			while (bfs_cells->size() != 0);
+			} while (bfs_cells->size() != 0);
 
 			// if no route is found, rip-up and re-route (BONUS)
 			if (!reached_target)
 			{
 				int m;
+				if (num_ripups >= nets.size())
+				{
+					cout << "ERROR!!!\nRip-Up failed!!!\n";
+					return;
+				}
 				for (m = 1; m <= num_ripups; m++)
 				{
 					for (int k = 0; k < output_nets[i - 1].size(); k++)
 						cells[output_nets[i - m][k].layer][output_nets[i - m][k].x][output_nets[i - m][k].y] = 0;// unblocking
 					output_nets[i - m].clear(); // ripping up
+					// changing order of nets
 					nets.insert(nets.begin() + i - m, nets[i + 1 - m]);
 					nets.erase(nets.begin() + i + 2 - m);
-					break;
 				}
 				m--;
-				i = i - (1 + m);//momo
-				num_ripups++;
+				i = i - (1 + m);
+				num_ripups++; // increase number of ripups in case rip up failed
+				break;
 			}
 
 			// when a route is found
@@ -455,7 +460,7 @@ void maze_routing(vector<vector<pin>> nets)
 		}
 		// connect cells in targets
 		// mark target cells as blocked since the wire is finalized
-			
+
 		if (reached_target)
 		{
 			for (int k = 0; k < targets->size(); k++)
@@ -466,15 +471,13 @@ void maze_routing(vector<vector<pin>> nets)
 		}
 	}
 
-	for (int i = 0; i < NUMBER_LAYERS; i++)
-		for (int j = 0; j < N; j++)
-			for (int k = 0; k < N; k++)
-				if (cells[i][j][k] == 1000000000)
-					cout << i << " " << j << " " << k << " " << endl;
-
 	ofstream ofile("output.txt");
 	for (int i = 0; i < output_nets.size(); i++)
 	{
+		if (output_nets[i].size() == 0) {
+			cout << "ERROR!!!\nA net was not routed!\n";
+			continue;
+		}
 		ofile << output_nets[i][0].net_name;
 		for (int j = 0; j < output_nets[i].size(); j++)
 			ofile << " (" << output_nets[i][j].layer + 1 << ", " << output_nets[i][j].x << ", " << output_nets[i][j].y << ")";
