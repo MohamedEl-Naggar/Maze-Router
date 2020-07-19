@@ -96,7 +96,7 @@ void maze_routing(vector<vector<pin>> nets)
 		cells[i] = new int* [N];
 	for (int i = 0; i < NUMBER_LAYERS; i++)
 		for (int j = 0; j < N; j++)
-			cells[i][j] = new int [N] ;
+			cells[i][j] = new int[N];
 	// 0 means clear
 	// -1 means start
 	// 1000000000 means blocked
@@ -208,79 +208,79 @@ void maze_routing(vector<vector<pin>> nets)
 				if (added_x == 1)
 					// filling through x-axis
 					switch (cur_x) {
-				case 0:
-					if (cells[cur_layer][1][cur_y] == 0)
-					{
-						cells[cur_layer][1][cur_y] = cur_num + added_x;
-						pin p_temp = p;
-						p_temp.x = 1;
-						bfs_cells->push_back(p_temp);
+					case 0:
+						if (cells[cur_layer][1][cur_y] == 0)
+						{
+							cells[cur_layer][1][cur_y] = cur_num + added_x;
+							pin p_temp = p;
+							p_temp.x = 1;
+							bfs_cells->push_back(p_temp);
+						}
+						break;
+					case N - 1:
+						if (cells[cur_layer][N - 2][cur_y] == 0)
+						{
+							cells[cur_layer][N - 2][cur_y] = cur_num + added_x;
+							pin p_temp = p;
+							p_temp.x = p.x - 1;
+							bfs_cells->push_back(p_temp);
+						}
+						break;
+					default:
+						if (cells[cur_layer][cur_x + 1][cur_y] == 0)
+						{
+							cells[cur_layer][cur_x + 1][cur_y] = cur_num + added_x;
+							pin p_temp = p;
+							p_temp.x = p.x + 1;
+							bfs_cells->push_back(p_temp);
+						}
+						if (cells[cur_layer][cur_x - 1][cur_y] == 0)
+						{
+							cells[cur_layer][cur_x - 1][cur_y] = cur_num + added_x;
+							pin p_temp = p;
+							p_temp.x = p.x - 1;
+							bfs_cells->push_back(p_temp);
+						}
+						break;
 					}
-					break;
-				case N - 1:
-					if (cells[cur_layer][N - 2][cur_y] == 0)
-					{
-						cells[cur_layer][N - 2][cur_y] = cur_num + added_x;
-						pin p_temp = p;
-						p_temp.x = p.x - 1;
-						bfs_cells->push_back(p_temp);
-					}
-					break;
-				default:
-					if (cells[cur_layer][cur_x + 1][cur_y] == 0)
-					{
-						cells[cur_layer][cur_x + 1][cur_y] = cur_num + added_x;
-						pin p_temp = p;
-						p_temp.x = p.x + 1;
-						bfs_cells->push_back(p_temp);
-					}
-					if (cells[cur_layer][cur_x - 1][cur_y] == 0)
-					{
-						cells[cur_layer][cur_x - 1][cur_y] = cur_num + added_x;
-						pin p_temp = p;
-						p_temp.x = p.x - 1;
-						bfs_cells->push_back(p_temp);
-					}
-					break;
-				}
 				else
 					// filling through y-axis
 					switch (cur_y) {
-				case 0:
-					if (cells[cur_layer][cur_x][1] == 0)
-					{
-						cells[cur_layer][cur_x][1] = cur_num + added_y;
-						pin p_temp = p;
-						p_temp.y = 1;
-						bfs_cells->push_back(p_temp);
+					case 0:
+						if (cells[cur_layer][cur_x][1] == 0)
+						{
+							cells[cur_layer][cur_x][1] = cur_num + added_y;
+							pin p_temp = p;
+							p_temp.y = 1;
+							bfs_cells->push_back(p_temp);
+						}
+						break;
+					case N - 1:
+						if (cells[cur_layer][cur_x][N - 2] == 0)
+						{
+							cells[cur_layer][cur_x][N - 2] = cur_num + added_y;
+							pin p_temp = p;
+							p_temp.y = p.y - 1;
+							bfs_cells->push_back(p_temp);
+						}
+						break;
+					default:
+						if (cells[cur_layer][cur_x][cur_y + 1] == 0)
+						{
+							cells[cur_layer][cur_x][cur_y + 1] = cur_num + added_y;
+							pin p_temp = p;
+							p_temp.y = p.y + 1;
+							bfs_cells->push_back(p_temp);
+						}
+						if (cells[cur_layer][cur_x][cur_y - 1] == 0)
+						{
+							cells[cur_layer][cur_x][cur_y - 1] = cur_num + added_y;
+							pin p_temp = p;
+							p_temp.y = p.y - 1;
+							bfs_cells->push_back(p_temp);
+						}
+						break;
 					}
-					break;
-				case N - 1:
-					if (cells[cur_layer][cur_x][N - 2] == 0)
-					{
-						cells[cur_layer][cur_x][N - 2] = cur_num + added_y;
-						pin p_temp = p;
-						p_temp.y = p.y - 1;
-						bfs_cells->push_back(p_temp);
-					}
-					break;
-				default:
-					if (cells[cur_layer][cur_x][cur_y + 1] == 0)
-					{
-						cells[cur_layer][cur_x][cur_y + 1] = cur_num + added_y;
-						pin p_temp = p;
-						p_temp.y = p.y + 1;
-						bfs_cells->push_back(p_temp);
-					}
-					if (cells[cur_layer][cur_x][cur_y - 1] == 0)
-					{
-						cells[cur_layer][cur_x][cur_y - 1] = cur_num + added_y;
-						pin p_temp = p;
-						p_temp.y = p.y - 1;
-						bfs_cells->push_back(p_temp);
-					}
-					break;
-				}
 
 				// check if reached target
 				// break loop if reached target
@@ -294,7 +294,7 @@ void maze_routing(vector<vector<pin>> nets)
 					}
 				if (reached_target)
 					break;
-				
+
 				// next cell
 				p = bfs_cells->at(0);
 				bfs_cells->erase(bfs_cells->begin());
@@ -317,7 +317,7 @@ void maze_routing(vector<vector<pin>> nets)
 				// add retraced cells to the array of targets
 
 				// retracing through layers
-				switch (cur_layer)  {
+				switch (cur_layer) {
 				case 0:
 					if (cells[1][cur_x][cur_y] < cur_sol_num && cells[1][cur_x][cur_y] != 0 && !next_cell_found)
 					{
@@ -353,7 +353,7 @@ void maze_routing(vector<vector<pin>> nets)
 					}
 					break;
 				}
-				
+
 				if (cur_layer % 2 == 0)
 					// retracing through x-axis
 					switch (cur_x) {
@@ -433,13 +433,13 @@ void maze_routing(vector<vector<pin>> nets)
 
 				cur_sol_num = cells[targets->back().layer][targets->back().x][targets->back().y];
 				found_target = targets->back();
-			}	
+			}
 		}
 		// connect cells in targets
 		// mark target cells as blocked since the wire is finalized
 		for (int k = 0; k < targets->size(); k++)
 			cells[targets->at(k).layer][targets->at(k).x][targets->at(k).y] = 1000000000; // blocking
-		
+
 		for (int k = 0; k < targets->size(); k++)
 			output_nets[i].push_back(targets->at(k));
 		cout << output_nets[i][0].net_name << endl;
@@ -460,7 +460,7 @@ void maze_routing(vector<vector<pin>> nets)
 	{
 		ofile << output_nets[i][0].net_name;
 		for (int j = 0; j < output_nets[i].size(); j++)
-			ofile << " (" << output_nets[i][j].layer << ", " << output_nets[i][j].x << ", " << output_nets[i][j].y << ")";
+			ofile << " (" << output_nets[i][j].layer + 1 << ", " << output_nets[i][j].x + 1 << ", " << output_nets[i][j].y + 1 << ")";
 		ofile << endl;
 	}
 }
