@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 f = open("output.txt", "r")
 layers = [] 
 x_coordinates = [] # x coordinates array
@@ -66,10 +67,10 @@ for i in range(len(x_plot)):
     y_temp = y_plot[i]
 
 # axes range
-axes12.set_xticks((range(1,51))) 
-axes12.set_yticks((range(1,51)))
-axes23.set_xticks((range(1,51))) 
-axes23.set_yticks((range(1,51)))
+axes12.set_xticks((range(0,51))) 
+axes12.set_yticks((range(0,51)))
+axes23.set_xticks((range(0,51))) 
+axes23.set_yticks((range(0,51)))
 
 axes12.grid(True)
 axes12.set_title('layer 1 & 2')
