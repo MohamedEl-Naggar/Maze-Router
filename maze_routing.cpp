@@ -6,7 +6,7 @@
 using namespace std;
 
 const int NUMBER_LAYERS = 3;
-const int N = 50;
+const int N = 1000;
 
 struct pin									//a struct to define the pin and its attributes 
 {
@@ -114,9 +114,12 @@ void maze_routing(vector<vector<pin>> nets)
 	{
 		vector<pin>* targets;
 		targets = new vector<pin>;
+		bool reached_target = false;
 
 		// add first target pin to be a target
 		targets->push_back(nets[i][0]);
+
+		int num_ripups = 1;
 
 		for (int j = 0; j < nets[i].size() - 1; j++)
 		{
@@ -144,8 +147,6 @@ void maze_routing(vector<vector<pin>> nets)
 			// search for a route (apply Lee's algorithm)
 			int cur_num = 0;
 			pin found_target;
-
-			bool reached_target;
 
 			// filling
 			do
@@ -294,9 +295,25 @@ void maze_routing(vector<vector<pin>> nets)
 			}
 			while (bfs_cells->size() != 0);
 
+			// if no route is found, rip-up and re-route (BONUS)
 			if (!reached_target)
-				;// momo bonus
-			// when a solution is found
+			{
+				int m;
+				for (m = 1; m <= num_ripups; m++)
+				{
+					for (int k = 0; k < output_nets[i - 1].size(); k++)
+						cells[output_nets[i - m][k].layer][output_nets[i - m][k].x][output_nets[i - m][k].y] = 0;// unblocking
+					output_nets[i - m].clear(); // ripping up
+					nets.insert(nets.begin() + i - m, nets[i + 1 - m]);
+					nets.erase(nets.begin() + i + 2 - m);
+					break;
+				}
+				m--;
+				i = i - (1 + m);//momo
+				num_ripups++;
+			}
+
+			// when a route is found
 
 			int cur_sol_num = cells[found_target.layer][found_target.x][found_target.y];
 
@@ -426,22 +443,27 @@ void maze_routing(vector<vector<pin>> nets)
 						break;
 					}
 
+				// In case retracing from the target fails to reach the start (Impossible case, but just in case there was a problem with the code)
+				if (cur_sol_num == cells[targets->back().layer][targets->back().x][targets->back().y])
+				{
+					cout << "ERROR!!!\nFailed to retrace!\n";
+					return;
+				}
 				cur_sol_num = cells[targets->back().layer][targets->back().x][targets->back().y];
 				found_target = targets->back();
 			}
 		}
 		// connect cells in targets
 		// mark target cells as blocked since the wire is finalized
-		for (int k = 0; k < targets->size(); k++)
-			cells[targets->at(k).layer][targets->at(k).x][targets->at(k).y] = 1000000000; // blocking
+			
+		if (reached_target)
+		{
+			for (int k = 0; k < targets->size(); k++)
+				cells[targets->at(k).layer][targets->at(k).x][targets->at(k).y] = 1000000000; // blocking
 
-		for (int k = 0; k < targets->size(); k++)
-			output_nets[i].push_back(targets->at(k));
-		cout << output_nets[i][0].net_name << endl;
-
-		// momo bonus lw adreen
-		// while true loop can go infinitely if no routes exist momo
-		// the other while loop also can go infinitely momo
+			for (int k = 0; k < targets->size(); k++)
+				output_nets[i].push_back(targets->at(k));
+		}
 	}
 
 	for (int i = 0; i < NUMBER_LAYERS; i++)
