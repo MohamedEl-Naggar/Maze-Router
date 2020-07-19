@@ -21,24 +21,21 @@ bool sortbysec(const pair<int, int>& a,		// a function used for sorting later on
 {
 	return (a.second < b.second);
 }
-vector<vector<pin>> getting_input()								//the main function for extracting the input and sorting the nets ascendingly to be handeled 
+vector<vector<pin>> getting_input(string filename)								//the main function for extracting the input and sorting the nets ascendingly to be handeled 
 {
 	vector<vector<pin>> net;				//defining the vector that conatins the nets which contain the pins
 	string input;
 
-	ifstream ifile("input.txt");			//opening the file"input.txt" to get the input from it
+	ifstream ifile(filename);			//opening the file to get the input from it
 	int nett = 0;
 	vector< pair <int, int> > vect;
-	while (getline(ifile, input))			//handeling each line from the file seperatly to get the nets, pins, and it attributes 
+	while (getline(ifile, input))			//handling each line from the file seperatly to get the nets, pins, and it attributes 
 	{
-		int minx = INT_MAX, miny = INT_MAX, minl = INT_MAX;
-		int maxx = INT_MIN, maxy = INT_MIN, maxl = INT_MIN;
-		//cout << input << endl;
-		//string net_name = input.substr(input.find('n'), input.find('(') - 1);
-		//cout << net_name << endl;
+		int minx = INT_MAX, miny = INT_MAX;
+		int maxx = INT_MIN, maxy = INT_MIN;
 		int count = 0;
-		string net_name = input.substr(input.find('n'), input.find('(') - 1);
-		input = input.substr(input.find('('));		//dividing the input to handel it with the start of '('
+		string net_name = input.substr(0, input.find('(') - 1);
+		input = input.substr(input.find('('));		//dividing the input to handle it with the start of '('
 		for (int i = 0; i < input.length(); i++)		//this loop is used to determine the number of pins in each net and saving it in count
 			if (input[i] == '(')
 				count++;
@@ -48,12 +45,13 @@ vector<vector<pin>> getting_input()								//the main function for extracting th
 		{
 			string curr = input.substr(input.find('(') + 1, input.find(')') - input.find('(') - 1);    //dividing the input to get only the attributes of the pin we are workin on atm
 			input = input.substr(input.find(')') + 1);
-			//cout << curr << endl;
 			int layer = stoi(curr.substr(0, curr.find(',')));			//the layer is the first number of the attributes until we hit a comma
 			curr = curr.substr(curr.find(',') + 1);
 			int x = stoi(curr.substr(0, curr.find(',')));				//the x coordiante is the second number of the attributes until we hit a comma
 			curr = curr.substr(curr.find(',') + 1);
 			int y = stoi(curr.substr(1));								//the y coordiante is the third number of the attributes until we hit a comma
+
+			// net ordering
 
 			pin temppin;									// a temporary vector of type pin to arrange the nets according to the size of the wire needed for the pins
 			temppin.layer = layer;
@@ -62,26 +60,18 @@ vector<vector<pin>> getting_input()								//the main function for extracting th
 			temppin.net_name = net_name;
 			minx = x < minx ? x : minx;						//getting the borders of the smallest box that contains all the pins in all the layers
 			miny = y < miny ? y : miny;
-			minl = layer > minl ? layer : minl;
 			maxx = x > maxx ? x : maxx;
 			maxy = y > maxy ? y : maxy;
-			maxl = layer < maxl ? layer : maxl;
 			tempv.push_back(temppin);
 			if (i == count - 1)
 				net.push_back(tempv);
 		}
-		int volume = (maxx - minx) * (maxy - miny) * (maxl - minl);		//getting the volume of said box
-		vect.push_back(make_pair(nett, volume));
+		int length = (maxx - minx) + (maxy - miny);		//getting the length of said box
+		vect.push_back(make_pair(nett, length));
 		nett++;
-
 	}
 	sort(vect.begin(), vect.end(), sortbysec);					//sorting each net by the volume of the box that contains the pins
-	//for (int i = 0;i < net.size(); i++)
-	//{
-	//	for (int j = 0; j < net[vect[i].first].size(); j++)
-	//		cout << net[vect[i].first][j].layer << ' ' << net[vect[i].first][j].x << ' ' << net[vect[i].first][j].y << endl << net[vect[i].first][j].net_name<< endl;			//printing the nets and the attributes of each pin ascendingly
-	//	cout << endl << endl;
-	//}
+	
 	return net;
 }
 
@@ -115,8 +105,8 @@ void maze_routing(vector<vector<pin>> nets)
 		for (int j = 0; j < nets[i].size(); j++)
 		{
 			nets[i][j].layer--;
-			nets[i][j].x--;
-			nets[i][j].y--;
+			nets[i][j].x;
+			nets[i][j].y;
 			cells[nets[i][j].layer][nets[i][j].x][nets[i][j].y] = 1000000000;
 		}
 
@@ -155,8 +145,10 @@ void maze_routing(vector<vector<pin>> nets)
 			int cur_num = 0;
 			pin found_target;
 
+			bool reached_target;
+
 			// filling
-			while (true)
+			do
 			{
 				// wave propagation
 
@@ -284,7 +276,7 @@ void maze_routing(vector<vector<pin>> nets)
 
 				// check if reached target
 				// break loop if reached target
-				bool reached_target = false;
+				reached_target = false;
 				for (int k = 0; k < targets->size(); k++)
 					if (cells[targets->at(k).layer][targets->at(k).x][targets->at(k).y] != 0)
 					{
@@ -300,7 +292,10 @@ void maze_routing(vector<vector<pin>> nets)
 				bfs_cells->erase(bfs_cells->begin());
 				cur_num = cells[p.layer][p.x][p.y];
 			}
+			while (bfs_cells->size() != 0);
 
+			if (!reached_target)
+				;// momo bonus
 			// when a solution is found
 
 			int cur_sol_num = cells[found_target.layer][found_target.x][found_target.y];
@@ -460,12 +455,15 @@ void maze_routing(vector<vector<pin>> nets)
 	{
 		ofile << output_nets[i][0].net_name;
 		for (int j = 0; j < output_nets[i].size(); j++)
-			ofile << " (" << output_nets[i][j].layer + 1 << ", " << output_nets[i][j].x + 1 << ", " << output_nets[i][j].y + 1 << ")";
+			ofile << " (" << output_nets[i][j].layer + 1 << ", " << output_nets[i][j].x << ", " << output_nets[i][j].y << ")";
 		ofile << endl;
 	}
 }
 
 int main()
 {
-	maze_routing(getting_input());
+	string filename;
+	cout << "Please enter the input file name: ";
+	cin >> filename;
+	maze_routing(getting_input(filename));
 }
