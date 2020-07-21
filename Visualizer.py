@@ -34,11 +34,12 @@ for x in f: # search each line in the file
                 temp = ""
 
 # create two graphs one for layers 1-2 and 2-3
-fig, axes12 = plt.subplots(1,1, figsize = (15,10))
 fig2, axes23 = plt.subplots(1,1, figsize = (15,10))
+fig3, axes1 = plt.subplots(1,1, figsize = (15,10))
+fig, axes12 = plt.subplots(1,1, figsize = (15,10))
 
 # draw the plot in the middle of the cell
-x_plot = [int(i)+0.5 for i in x_coordinates] 
+x_plot = [int(i)+0.5 for i in x_coordinates]
 y_plot = [int(i)+0.5 for i in y_coordinates]
 
 layers_temp = "" # to check for vias
@@ -48,6 +49,7 @@ y_temp = "" # to check for vias
 for i in range(len(x_plot)):
     if layers[i] == '1':
         axes12.scatter(x_plot[i], y_plot[i], s=110, c='blue', marker='s') # layer 1 is drawn in blue
+        axes1.plot(x_plot[i], y_plot[i], s=110, c='blue', marker='s') # layer 1 is drawn in blue
         if layers[i] != layers_temp and x_plot[i] == x_temp and y_plot[i] == y_temp: # to check for vias
             axes12.scatter(x_plot[i], y_plot[i], s=110, c='purple', marker='x') # via
     elif layers[i] == '2':
@@ -67,8 +69,11 @@ for i in range(len(x_plot)):
     y_temp = y_plot[i]
 
 # axes range
+
 axes12.set_xticks((range(0,51))) 
 axes12.set_yticks((range(0,51)))
+axes1.set_xticks((range(0,51))) 
+axes1.set_yticks((range(0,51)))
 axes23.set_xticks((range(0,51))) 
 axes23.set_yticks((range(0,51)))
 
@@ -76,7 +81,12 @@ axes12.grid(True)
 axes12.set_title('layer 1 & 2')
 fig.tight_layout()
 
+axes1.grid(True)
+axes1.set_title('layer 1')
+fig3.tight_layout()
+
 axes23.grid(True)
-axes23.set_title('layer 2 & 3')
+axes23.set_title('layer 2')
 fig2.tight_layout()
+
 plt.show()
