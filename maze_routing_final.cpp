@@ -320,6 +320,8 @@ void maze_routing(vector<vector<pin>> nets)
 				{
 					for (int k = 0; k < output_nets[i - m].size(); k++)
 						cells[output_nets[i - m][k].layer][output_nets[i - m][k].x][output_nets[i - m][k].y] = 0;// unblocking
+					for (int k = 0; k < nets[i - m].size(); k++)
+						cells[nets[i - m][k].layer][nets[i - m][k].x][nets[i - m][k].y] = 1000000000;// blocking the already existing pins
 					output_nets[i - m].clear(); // ripping up
 					// changing order of nets
 					nets.insert(nets.begin() + i - m, nets[i + 1 - m]);
